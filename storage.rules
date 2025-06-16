@@ -1,10 +1,57 @@
 rules_version = '2';
 
-// Craft rules based on data in your Firestore database
-// allow write: if firestore.get(
-//    /databases/(default)/documents/users/$(request.auth.uid)).data.isAdmin;
 service firebase.storage {
   match /b/{bucket}/o {
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Imagens de Perfil: /users/{userId}/profilePicture
+    match /users/{userId}/profilePicture {
+      // Qualquer um pode ler
+      allow read: if true;
+      // Apenas o dono pode escrever, com validação de tamanho e tipo
+      allow write: if isOwner(userId)
+        && request.resource.size < 5 * 1024 * 1024 // Max 5MB
+        && request.resource.contentType.matches('image/(jpeg|png|gif|webp)');
+    }
+
+    // Imagens de Estabelecimentos: /establishments/{establishmentId}/{imageId}
+    match /establishments/{establishmentId}/{imageId} {
+      // Qualquer um pode ler
+      allow read: if true;
+      // Apenas usuários autenticados podem escrever, com validação de tamanho e tipo
+      allow write: if isAuthenticated()
+        && request.resource.size < 10 * 1024 * 1024 // Max 10MB
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Imagens de Artistas: /artists/{artistId}/{imageId}
+    match /artists/{artistId}/{imageId} {
+      // Qualquer um pode ler
+      allow read: if true;
+      // Apenas usuários autenticados podem escrever, com validação de tamanho e tipo
+      allow write: if isAuthenticated()
+        && request.resource.size < 10 * 1024 * 1024 // Max 10MB
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Imagens de Eventos: /events/{eventId}/{imageId}
+    match /events/{eventId}/{imageId} {
+      // Qualquer um pode ler
+      allow read: if true;
+      // Apenas usuários autenticados podem escrever, com validação de tamanho e tipo
+      allow write: if isAuthenticated()
+        && request.resource.size < 10 * 1024 * 1024 // Max 10MB
+        && request.resource.contentType.matches('image/.*');
+    }
+
+    // Bloqueia qualquer outro caminho por padrão
     match /{allPaths=**} {
       allow read, write: if false;
     }

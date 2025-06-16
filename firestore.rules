@@ -3,17 +3,103 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
-    // This rule allows anyone with your Firestore database reference to view, edit,
-    // and delete all data in your Firestore database. It is useful for getting
-    // started, but it is configured to expire after 30 days because it
-    // leaves your app open to attackers. At that time, all client
-    // requests to your Firestore database will be denied.
-    //
-    // Make sure to write security rules for your app before that time, or else
-    // all client requests to your Firestore database will be denied until you Update
-    // your rules
+    // --- Funções Helper ---
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Verifica se o UID do usuário logado corresponde ao ID do documento sendo acessado
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Verifica se o usuário logado é membro de uma organização específica
+    function isOrgMember(orgId) {
+      return exists(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid));
+    }
+
+    // Obtém o papel do usuário logado em uma organização específica
+    function getOrgRole(orgId) {
+      return get(/databases/$(database)/documents/organizations/$(orgId)/members/$(request.auth.uid)).data.role;
+    }
+
+    // Verifica se o usuário tem um papel específico ou superior
+    function hasOrgRole(orgId, targetRole) {
+      let userRole = getOrgRole(orgId);
+      let roles = {
+        "viewer": 1,
+        "editor": 2,
+        "admin": 3,
+        "owner": 4
+      };
+      return userRole != null && roles[userRole] >= roles[targetRole];
+    }
+
+    // --- Regras por Coleção ---
+
+    // Coleção 'users'
+    match /users/{userId} {
+      // Qualquer usuário autenticado pode ler perfis para exibir nomes e fotos
+      allow read: if isAuthenticated();
+      // Apenas o próprio usuário pode criar ou atualizar seu perfil
+      allow create, update: if isAuthenticated() && isOwner(userId);
+      // Ninguém pode deletar perfis diretamente
+      allow delete: if false;
+    }
+
+    // Coleção 'organizations'
+    match /organizations/{orgId} {
+      // Qualquer usuário autenticado pode ler dados da organização
+      allow read: if isAuthenticated(); 
+      // Apenas usuários autenticados podem criar organizações inicialmente
+      allow create: if isAuthenticated(); 
+      // Apenas membros com papel 'admin' ou 'owner' podem atualizar a organização
+      allow update: if isAuthenticated() && hasOrgRole(orgId, 'admin'); 
+      // Apenas o 'owner' pode deletar
+      allow delete: if isAuthenticated() && hasOrgRole(orgId, 'owner'); 
+
+      // Subcoleção 'members'
+      match /members/{userId} {
+        // Membros podem ler a lista de membros
+        allow read: if isAuthenticated() && isOrgMember(orgId); 
+        // Admins/Owners podem adicionar/remover/editar membros
+        allow write: if isAuthenticated() && hasOrgRole(orgId, 'admin'); 
+      }
+    }
+
+    // Coleção 'establishments'
+    match /establishments/{estId} {
+      // Qualquer um pode ler estabelecimentos ativos
+      allow read: if resource.data.isActive == true; 
+      // Membros com papel 'editor' ou superior podem criar estabelecimentos
+      allow create: if isAuthenticated() && hasOrgRole(request.resource.data.organizationId, 'editor'); 
+      // Membros com papel 'editor' ou superior podem atualizar
+      allow update: if isAuthenticated() && hasOrgRole(resource.data.organizationId, 'editor'); 
+      // Membros com papel 'admin' ou superior podem deletar
+      allow delete: if isAuthenticated() && hasOrgRole(resource.data.organizationId, 'admin'); 
+    }
+
+    // Coleção 'events'
+    match /events/{eventId} {
+      // Qualquer um pode ler eventos ativos
+      allow read: if resource.data.isActive == true; 
+      // Editores podem criar/atualizar e admins podem deletar
+      allow create: if isAuthenticated() && hasOrgRole(request.resource.data.organizationId, 'editor'); 
+      allow update: if isAuthenticated() && hasOrgRole(resource.data.organizationId, 'editor'); 
+      allow delete: if isAuthenticated() && hasOrgRole(resource.data.organizationId, 'admin'); 
+    }
+
+    // Coleção 'artists'
+    match /artists/{artistId} {
+      // Qualquer um pode ler artistas verificados
+      allow read: if resource.data.isVerified == true; 
+      // Apenas usuários autenticados podem escrever, para testes
+      allow write: if isAuthenticated(); 
+    }
+
+    // Regra padrão para coleções não especificadas: negar tudo
     match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 6, 21);
+      allow read, write: if false; 
     }
   }
 }
