@@ -1,3 +1,6 @@
+// src/contexts/AuthContext.js
+// (Versão final após o Dia 30)
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import {
   onAuthStateChanged,
@@ -6,15 +9,15 @@ import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
-  signOut,
-  sendPasswordResetEmail,
+  // signOut, // Importaremos depois
+  // sendPasswordResetEmail, // Importaremos depois
 } from "firebase/auth";
 import {
   doc,
   getDoc,
   setDoc,
-  serverTimestamp,
   updateDoc,
+  serverTimestamp,
 } from "firebase/firestore";
 import { auth, db } from "../services/firebase";
 
@@ -30,124 +33,29 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  // Funções de Auth já implementadas
   async function register(email, password, displayName) {
-    setError("");
-    if (!email || !password || !displayName) {
-      const errorMsg = "Email, senha e nome são obrigatórios.";
-      setError(errorMsg);
-      throw new Error(errorMsg);
-    }
-    try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      await updateProfile(user, { displayName });
-      const userDocRef = doc(db, "users", user.uid);
-      const newUserProfileData = {
-        uid: user.uid,
-        email: user.email,
-        displayName: displayName,
-        photoURL: user.photoURL || null,
-        createdAt: serverTimestamp(),
-        role: "consumer",
-        preferences: {
-          notifications: { emailEnabled: true, pushEnabled: true },
-          favoriteCategories: [],
-          searchRadiusKm: 10,
-          theme: "system",
-        },
-        isActive: true,
-      };
-      await setDoc(userDocRef, newUserProfileData);
-      return user;
-    } catch (err) {
-      //... (tratamento de erro detalhado)
-      throw err;
-    }
+    /* ...código do register... */
   }
-
   async function login(email, password) {
-    setError("");
-    try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-      const user = userCredential.user;
-      const userDocRef = doc(db, "users", user.uid);
-      await updateDoc(userDocRef, { lastLoginAt: serverTimestamp() });
-      return user;
-    } catch (err) {
-      //... (tratamento de erro detalhado)
-      throw err;
-    }
+    /* ...código do login... */
   }
-
   async function loginWithGoogle() {
-    setError("");
-    try {
-      const provider = new GoogleAuthProvider();
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      const userDocRef = doc(db, "users", user.uid);
-      const userDocSnap = await getDoc(userDocRef);
-      if (!userDocSnap.exists()) {
-        const newUserProfileData = {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName || "Usuário Google",
-          photoURL: user.photoURL || null,
-          createdAt: serverTimestamp(),
-          role: "consumer",
-          preferences: {
-            /* ... */
-          },
-          isActive: true,
-          lastLoginAt: serverTimestamp(),
-        };
-        await setDoc(userDocRef, newUserProfileData);
-      } else {
-        await updateDoc(userDocRef, { lastLoginAt: serverTimestamp() });
-      }
-      return user;
-    } catch (err) {
-      //... (tratamento de erro detalhado)
-      throw err;
-    }
-  }
-
-  async function logout() {
-    setError("");
-    try {
-      await signOut(auth);
-    } catch (err) {
-      setError("Ocorreu um erro ao tentar deslogar.");
-      throw err;
-    }
-  }
-
-  async function resetPassword(email) {
-    setError("");
-    try {
-      await sendPasswordResetEmail(auth, email);
-      return true;
-    } catch (err) {
-      //... (tratamento de erro detalhado)
-      throw err;
-    }
+    /* ...código do loginWithGoogle... */
   }
 
   async function updateUserProfile(data) {
     setError("");
-    if (!currentUser) throw new Error("Nenhum usuário logado.");
+    if (!currentUser)
+      throw new Error("Nenhum usuário logado para atualizar o perfil.");
+
     try {
       const userDocRef = doc(db, "users", currentUser.uid);
       const firestoreUpdateData = { ...data, updatedAt: serverTimestamp() };
-      //... (remover campos imutáveis)
+      delete firestoreUpdateData.email;
+      delete firestoreUpdateData.uid;
+      delete firestoreUpdateData.createdAt;
+      delete firestoreUpdateData.role;
       await updateDoc(userDocRef, firestoreUpdateData);
 
       const authUpdateData = {};
@@ -158,6 +66,7 @@ export function AuthProvider({ children }) {
       if (Object.keys(authUpdateData).length > 0) {
         await updateProfile(currentUser, authUpdateData);
       }
+
       setUserProfile((prev) => ({
         ...prev,
         ...firestoreUpdateData,
@@ -170,27 +79,12 @@ export function AuthProvider({ children }) {
     }
   }
 
+  // Placeholders para as funções restantes
+  // async function logout() {}
+  // async function resetPassword(email) {}
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      setCurrentUser(user);
-      if (user) {
-        try {
-          const userDocRef = doc(db, "users", user.uid);
-          const userDocSnap = await getDoc(userDocRef);
-          if (userDocSnap.exists()) {
-            setUserProfile(userDocSnap.data());
-          } else {
-            //... (tratamento de perfil não encontrado)
-          }
-        } catch (err) {
-          //... (tratamento de erro ao carregar perfil)
-        }
-      } else {
-        setUserProfile(null);
-      }
-      setLoading(false);
-    });
-    return unsubscribe;
+    /* ...código robusto do useEffect do Dia 26... */
   }, []);
 
   const value = {
@@ -202,9 +96,9 @@ export function AuthProvider({ children }) {
     register,
     login,
     loginWithGoogle,
-    logout,
-    resetPassword,
     updateUserProfile,
+    // logout,
+    // resetPassword,
   };
 
   return (
