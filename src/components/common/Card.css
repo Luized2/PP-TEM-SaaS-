@@ -1,0 +1,76 @@
+/* src/components/common/Card.css */
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 1px solid var(--gray-200, rgba(0, 0, 0, 0.125));
+  border-radius: var(--border-radius-lg, 0.5rem);
+  box-shadow: var(--box-shadow, 0 1px 3px rgba(0, 0, 0, 0.07));
+  margin-bottom: 1.5rem; /* Espaçamento padrão entre cards */
+}
+
+.card-clickable {
+  cursor: pointer;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
+}
+
+.card-clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+}
+
+.card-clickable:focus-visible {
+  outline: 2px solid var(--primary-color, #007bff);
+  outline-offset: 2px;
+}
+
+/* --- Estilos dos Subcomponentes --- */
+
+.card-header {
+  padding: 0.75rem 1.25rem;
+  margin-bottom: 0;
+  background-color: var(--light-gray, rgba(0, 0, 0, 0.03));
+  border-bottom: 1px solid var(--gray-200, rgba(0, 0, 0, 0.125));
+}
+
+/* Garante que o Header tenha os cantos arredondados corretos */
+.card-header:first-child {
+  border-top-left-radius: calc(var(--border-radius-lg, 0.5rem) - 1px);
+  border-top-right-radius: calc(var(--border-radius-lg, 0.5rem) - 1px);
+}
+
+.card-body {
+  flex: 1 1 auto; /* Permite que o corpo do card cresça para preencher o espaço */
+  padding: 1.25rem;
+}
+
+.card-footer {
+  padding: 0.75rem 1.25rem;
+  background-color: var(--light-gray, rgba(0, 0, 0, 0.03));
+  border-top: 1px solid var(--gray-200, rgba(0, 0, 0, 0.125));
+}
+
+/* Garante que o Footer tenha os cantos arredondados corretos */
+.card-footer:last-child {
+  border-bottom-right-radius: calc(var(--border-radius-lg, 0.5rem) - 1px);
+  border-bottom-left-radius: calc(var(--border-radius-lg, 0.5rem) - 1px);
+}
+
+.card-img {
+  width: 100%;
+  height: auto;
+  display: block; /* Remove espaço extra abaixo da imagem */
+}
+
+/* Arredonda os cantos superiores se a imagem for o primeiro elemento do card */
+.card-img:first-child {
+  border-top-left-radius: calc(var(--border-radius-lg, 0.5rem) - 1px);
+  border-top-right-radius: calc(var(--border-radius-lg, 0.5rem) - 1px);
+}

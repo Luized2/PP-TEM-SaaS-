@@ -1,0 +1,106 @@
+/* src/components/layout/Header.css */
+.main-header {
+  background-color: #ffffff;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #e9ecef;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.logo a {
+  font-weight: 700;
+  font-size: 1.5rem;
+  text-decoration: none;
+  color: #343a40;
+}
+
+.main-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 25px; /* Espaçamento entre links */
+}
+
+.main-nav a,
+.auth-section a,
+.auth-section button {
+  text-decoration: none;
+  color: #495057;
+  padding: 8px 12px;
+  border-radius: 6px;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+  font-weight: 500;
+}
+
+.main-nav a.active,
+.auth-section a.active {
+  color: #007bff;
+  font-weight: 700;
+}
+
+.main-nav a:hover,
+.auth-section a:hover {
+  background-color: #f1f3f5;
+  color: #0056b3;
+}
+
+.auth-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.auth-section .register-link {
+  background-color: #007bff;
+  color: white;
+  padding: 8px 16px;
+}
+
+.auth-section .register-link:hover {
+  background-color: #0056b3;
+  color: white;
+}
+
+.user-menu {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-menu span {
+  margin-right: 10px;
+  color: #555;
+  font-weight: 500;
+}
+
+.logout-button {
+  background: none;
+  border: 1px solid #dc3545;
+  color: #dc3545;
+  cursor: pointer;
+  padding: 7px 15px;
+  font-size: inherit;
+  border-radius: 6px;
+  font-weight: 500;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.logout-button:hover {
+  background-color: #dc3545;
+  color: white;
+}

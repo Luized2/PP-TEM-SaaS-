@@ -1,0 +1,26 @@
+/* src/components/common/Notification.css */
+.notification-container {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 2000; /* Acima de tudo */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.notification-container .alert {
+  box-shadow: var(--box-shadow);
+  animation: slideInRight 0.3s ease-out;
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}

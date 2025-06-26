@@ -1,3 +1,4 @@
+// src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -6,69 +7,67 @@ import { AuthProvider } from "./contexts/AuthContext";
 import MainLayout from "./components/layout/MainLayout";
 import AuthLayout from "./components/layout/AuthLayout";
 
+// Componentes de Rota
+import ProtectedRoute from "./components/auth/ProtectedRoute";
+import AuthRoute from "./components/auth/AuthRoute";
+
 // Pages
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
+import EstablishmentsPage from "./pages/EstablishmentsPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
 import NotFoundPage from "./pages/NotFoundPage";
 
-// Route Components
-import ProtectedRoute from "./components/auth/ProtectedRoute";
-import AuthRoute from "./components/auth/AuthRoute";
+// Novas Páginas (devem ser criadas)
+import NewEstablishmentPage from "./pages/NewEstablishmentPage";
+import CheckoutPage from "./pages/CheckoutPage";
+import PricingPage from "./pages/PricingPage"; // Adicionada para o fluxo de monetização
 
 import "./styles/global.css";
 
 function App() {
   return (
+    // O AuthProvider envolve toda a aplicação, disponibilizando o contexto
     <AuthProvider>
       <Router>
         <Routes>
-          {/* Rotas Públicas */}
+          {/* Rotas Públicas (dentro do MainLayout) */}
           <Route element={<MainLayout />}>
             <Route path="/" element={<HomePage />} />
-            {/* Adicionar outras rotas públicas aqui */}
+            <Route path="/establishments" element={<EstablishmentsPage />} />
+            <Route path="/pricing" element={<PricingPage />} />{" "}
+            {/* Rota para a página de preços */}
           </Route>
 
-          {/* Rotas de Autenticação */}
-          <Route element={<AuthLayout />}>
-            <Route
-              path="/login"
-              element={
-                <AuthRoute>
-                  <LoginPage />
-                </AuthRoute>
-              }
-            />
-            <Route
-              path="/cadastro"
-              element={
-                <AuthRoute>
-                  <RegisterPage />
-                </AuthRoute>
-              }
-            />
+          {/* Rotas de Autenticação (dentro do AuthLayout e protegidas pelo AuthRoute) */}
+          <Route
+            element={
+              <AuthRoute>
+                <AuthLayout />
+              </AuthRoute>
+            }
+          >
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
           </Route>
 
-          {/* Rotas Protegidas */}
-          <Route element={<MainLayout />}>
+          {/* Rotas Protegidas (dentro do MainLayout e protegidas pelo ProtectedRoute) */}
+          <Route
+            element={
+              <ProtectedRoute>
+                <MainLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/profile" element={<ProfilePage />} />
             <Route
-              path="/dashboard"
-              element={
-                <ProtectedRoute>
-                  <DashboardPage />
-                </ProtectedRoute>
-              }
+              path="/establishments/new"
+              element={<NewEstablishmentPage />}
             />
-            <Route
-              path="/perfil"
-              element={
-                <ProtectedRoute>
-                  <ProfilePage />
-                </ProtectedRoute>
-              }
-            />
+            <Route path="/checkout/:planId" element={<CheckoutPage />} />
           </Route>
 
           {/* Rota Not Found */}

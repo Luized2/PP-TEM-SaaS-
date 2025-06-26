@@ -1,0 +1,22 @@
+.establishments-page .map-section {
+  margin-bottom: 2rem;
+  border-radius: var(--border-radius-lg);
+  overflow: hidden; /* Garante que o mapa respeite o border-radius */
+  box-shadow: var(--box-shadow);
+}
+
+.establishments-page .list-section h2 {
+  border-bottom: 2px solid var(--gray-200);
+  padding-bottom: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.establishments-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.establishment-card {
+  margin-bottom: 0; /* Remove a margem padrão do card para o grid controlar */
+}

@@ -1,0 +1,131 @@
+.pricing-plans-container {
+  padding: 3rem 1.5rem;
+  background-color: var(--light-gray, #f8f9fa);
+}
+
+.pricing-header {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.pricing-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.pricing-header p {
+  font-size: 1.125rem;
+  color: var(--secondary-color);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.plans-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 2rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* A partir de tablets */
+@media (min-width: 768px) {
+  .plans-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.plan-card {
+  border: 1px solid var(--gray-200);
+  border-radius: var(--border-radius-lg);
+  display: flex;
+  flex-direction: column;
+  transition: all 0.3s ease;
+}
+
+.plan-card.featured {
+  border: 2px solid var(--primary-color);
+  transform: scale(1.05);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  position: relative;
+}
+
+.featured-badge {
+  position: absolute;
+  top: -15px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: bold;
+}
+
+.plan-card .card-header,
+.plan-card .card-footer {
+  text-align: center;
+  background-color: white;
+}
+
+.plan-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.plan-price {
+  margin: 1rem 0;
+}
+
+.price-amount {
+  font-size: 3rem;
+  font-weight: bold;
+  color: var(--dark-color);
+}
+
+.price-frequency {
+  font-size: 1rem;
+  color: var(--secondary-color);
+  margin-left: 0.25rem;
+}
+
+.plan-description {
+  min-height: 60px; /* Garante alinhamento */
+  color: var(--secondary-color);
+}
+
+.features-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex-grow: 1; /* Faz esta seção crescer e empurrar o footer para baixo */
+}
+
+.features-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--gray-200);
+}
+
+.features-list li:last-child {
+  border-bottom: none;
+}
+
+.check-icon {
+  color: var(--success-color, #28a745);
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.plan-card .card-footer {
+  border-top: none;
+  padding-bottom: 1.5rem;
+}
+
+.plan-card .w-100 {
+  width: 100%;
+}

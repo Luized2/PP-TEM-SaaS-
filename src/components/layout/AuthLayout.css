@@ -1,0 +1,17 @@
+/* src/components/layout/AuthLayout.css */
+.auth-layout-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  background-color: #f1f3f5; /* Um fundo cinza claro */
+}
+
+.auth-content-box {
+  width: 100%;
+  max-width: 450px;
+  background-color: white;
+  padding: 2.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
