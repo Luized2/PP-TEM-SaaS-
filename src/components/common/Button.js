@@ -1,23 +1,25 @@
 import React from "react";
 import PropTypes from "prop-types";
-import Spinner from "./Spinner"; // Usando o Spinner que já criamos
-import "./Button.css"; // Onde definiremos os estilos
+import Spinner from "./Spinner";
+import "./Button.css";
 
+/**
+ * Componente de botão flexível que suporta variantes, tamanhos e estados de carregamento.
+ */
 function Button({
   children,
   onClick,
   type = "button",
-  variant = "primary", // 'primary', 'secondary', 'danger', 'outline', 'link'
-  size = "medium", // 'small', 'medium', 'large'
+  variant = "primary",
+  size = "medium",
   disabled = false,
   loading = false,
   className = "",
-  ...props // Pega quaisquer outras props (ex: 'aria-label') e passa para o botão
+  ...props
 }) {
-  // Constrói a lista de classes CSS dinamicamente com base nas props
   const buttonClasses = ["btn", `btn-${variant}`, `btn-${size}`, className]
     .filter(Boolean)
-    .join(" "); // O filter(Boolean) remove classes vazias
+    .join(" ");
 
   // O botão fica desabilitado se a prop 'disabled' for true OU se estiver no estado 'loading'
   const isDisabled = disabled || loading;
@@ -30,14 +32,12 @@ function Button({
       disabled={isDisabled}
       {...props}
     >
-      {/* Se estiver carregando, mostra o Spinner. Senão, mostra o texto (children). */}
-      {loading ? <Spinner /> : children}
+      {/* Se estiver a carregar, mostra o Spinner. Senão, mostra o texto (children). */}
+      {loading ? <Spinner size="small" /> : children}
     </button>
   );
 }
 
-// PropTypes definem o "contrato" do nosso componente.
-// É uma excelente prática para garantir que ele seja usado corretamente.
 Button.propTypes = {
   children: PropTypes.node.isRequired,
   onClick: PropTypes.func,
