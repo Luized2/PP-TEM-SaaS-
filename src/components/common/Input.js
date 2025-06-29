@@ -1,57 +1,53 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import PropTypes from "prop-types";
-import "./Input.css"; // Onde definiremos os estilos
+import "./Input.css";
 
-// Usamos React.forwardRef para que o componente pai possa obter uma ref do <input> interno
-const Input = React.forwardRef(
+const Input = forwardRef(
   (
     {
-      label,
-      id,
       type = "text",
+      name,
+      label,
       error,
+      touched,
+      required = false,
       className = "",
-      containerClassName = "",
-      ...props // Pega quaisquer outras props (ex: 'onChange', 'value', 'placeholder')
+      ...props
     },
-    ref // A ref é passada como segundo argumento
+    ref
   ) => {
-    // Cria um ID único para o input a partir do label, caso nenhum ID seja fornecido.
-    // Isso é ótimo para acessibilidade (conectar label e input).
-    const inputId = id || `input-${label?.toLowerCase().replace(/\s+/g, "-")}`;
-
-    // Constrói as classes CSS dinamicamente
     const inputClasses = [
       "form-input",
-      error ? "is-invalid" : "", // Adiciona a classe de erro se a prop 'error' existir
+      // Adiciona a classe de erro apenas se o campo foi "tocado" E tem um erro.
+      error && touched ? "input-error" : "",
+      props.disabled ? "input-disabled" : "",
       className,
     ]
       .filter(Boolean)
       .join(" ");
 
-    const containerClasses = ["form-group", containerClassName]
-      .filter(Boolean)
-      .join(" ");
+    const id = `input-${name}`;
 
     return (
-      <div className={containerClasses}>
+      <div className="form-group">
         {label && (
-          <label htmlFor={inputId} className="form-label">
+          <label htmlFor={id} className="form-label">
             {label}
+            {required && <span className="required-mark">*</span>}
           </label>
         )}
         <input
-          id={inputId}
-          ref={ref} // Aqui a "ponte" é estabelecida, a ref é anexada ao input
+          id={id}
+          name={name}
           type={type}
+          ref={ref}
           className={inputClasses}
-          aria-invalid={!!error} // Acessibilidade: informa aos leitores de tela que o campo é inválido
-          aria-describedby={error ? `${inputId}-error` : undefined} // Conecta o input à sua mensagem de erro
+          aria-invalid={!!(error && touched)}
+          aria-describedby={error && touched ? `${id}-error` : undefined}
           {...props}
         />
-        {/* Se a prop 'error' for passada, exibe a mensagem de erro */}
-        {error && (
-          <div id={`${inputId}-error`} className="invalid-feedback">
+        {error && touched && (
+          <div id={`${id}-error`} className="input-error-message" role="alert">
             {error}
           </div>
         )}
@@ -60,15 +56,16 @@ const Input = React.forwardRef(
   }
 );
 
-Input.displayName = "Input"; // Boa prática para debugging com forwardRef
+Input.displayName = "Input";
 
 Input.propTypes = {
-  label: PropTypes.string,
-  id: PropTypes.string,
   type: PropTypes.string,
-  error: PropTypes.string, // Mensagem de erro a ser exibida
-  className: PropTypes.string, // Classes customizadas para o elemento <input>
-  containerClassName: PropTypes.string, // Classes customizadas para o <div> container
+  name: PropTypes.string.isRequired,
+  label: PropTypes.string,
+  error: PropTypes.string,
+  touched: PropTypes.bool,
+  required: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default Input;

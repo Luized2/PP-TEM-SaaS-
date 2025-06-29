@@ -1,0 +1,55 @@
+.auth-form-container {
+  width: 100%;
+  max-width: 450px;
+  margin: 0 auto;
+}
+
+.auth-form-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--dark-color, #333);
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* O componente Alert já tem o seu próprio estilo, não precisamos de duplicar */
+.auth-form .alert {
+  margin-bottom: 1.5rem;
+}
+
+.auth-form-actions {
+  margin-top: 1.5rem;
+}
+
+.auth-submit-btn {
+  width: 100%;
+}
+
+.auth-form-links {
+  margin-top: 1.5rem;
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--secondary-color, #6c757d);
+}
+
+.auth-link {
+  color: var(--primary-color, #007bff);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.15s ease-in-out;
+}
+
+.auth-link:hover {
+  color: var(--primary-darker, #0056b3);
+  text-decoration: underline;
+}
+
+.auth-separator {
+  margin: 0 0.5rem;
+  color: #ced4da;
+}

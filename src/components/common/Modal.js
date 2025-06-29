@@ -1,82 +1,101 @@
 import React, { useEffect } from "react";
 import ReactDOM from "react-dom";
 import PropTypes from "prop-types";
-import "./Modal.css"; // Onde iremos definir os estilos
+import "./Modal.css";
 
-// Elemento no HTML onde os portais serão montados
-const modalRoot = document.getElementById("modal-root");
-
+/**
+ * Um componente de Modal reutilizável, acessível e configurável, renderizado através de um Portal.
+ */
 function Modal({
   isOpen,
   onClose,
   title,
   children,
-  footerContent, // Conteúdo customizado para o rodapé (ex: botões)
-  size = "medium", // 'small', 'medium', 'large'
+  size = "medium",
+  showCloseButton = true,
+  closeOnEsc = true,
+  closeOnOverlayClick = true,
+  className = "",
 }) {
-  // Efeito para:
-  // 1. Evitar o scroll da página principal quando o modal está aberto.
-  // 2. Permitir fechar o modal com a tecla 'Escape'.
+  // Efeito para fechar com a tecla ESC e controlar o scroll do body
   useEffect(() => {
-    const handleEsc = (event) => {
-      if (event.key === "Escape") {
+    const handleEscKey = (event) => {
+      if (closeOnEsc && event.key === "Escape") {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.body.classList.add("modal-open");
-      document.addEventListener("keydown", handleEsc);
+      document.addEventListener("keydown", handleEscKey);
+      document.body.style.overflow = "hidden"; // Impede a rolagem da página principal
     }
 
-    // Função de limpeza: executada quando o componente é "desmontado"
-    // ou quando a dependência 'isOpen' muda.
+    // Função de limpeza que é executada quando o componente é desmontado
     return () => {
-      document.body.classList.remove("modal-open");
-      document.removeEventListener("keydown", handleEsc);
+      document.removeEventListener("keydown", handleEscKey);
+      document.body.style.overflow = ""; // Restaura a rolagem
     };
-  }, [isOpen, onClose]); // Roda o efeito sempre que 'isOpen' ou 'onClose' mudar
+  }, [isOpen, onClose, closeOnEsc]); // Re-executa o efeito se estas props mudarem
 
-  // Não renderiza nada se a prop 'isOpen' for falsa
+  // Não renderiza nada se o modal estiver fechado
   if (!isOpen) {
     return null;
   }
 
-  // Usa o Portal para renderizar o modal na #modal-root do seu HTML
+  // Função para fechar o modal ao clicar no fundo (overlay)
+  const handleOverlayClick = (e) => {
+    // Só fecha se a prop estiver ativa E o clique for no próprio overlay, não no conteúdo
+    if (closeOnOverlayClick && e.target === e.currentTarget) {
+      onClose();
+    }
+  };
+
+  // Constrói a lista de classes CSS para o conteúdo do modal
+  const modalClasses = ["modal-content", `modal-${size}`, className]
+    .filter(Boolean)
+    .join(" ");
+
+  // Usa o Portal para "teleportar" o JSX para um nó diferente do DOM
   return ReactDOM.createPortal(
-    // O backdrop escuro. O clique aqui fecha o modal.
-    <div className="modal-backdrop" onClick={onClose}>
-      <div
-        className={`modal-container modal-${size}`}
-        // Impede que o clique DENTRO do modal se propague e feche o modal
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div
+      className="modal-overlay"
+      onClick={handleOverlayClick}
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modal-title"
+    >
+      <div className={modalClasses}>
         <div className="modal-header">
-          {title && <h3 className="modal-title">{title}</h3>}
-          <button
-            type="button"
-            className="modal-close-button"
-            onClick={onClose}
-            aria-label="Fechar"
-          >
-            &times; {/* Ícone 'X' para fechar */}
-          </button>
+          <h3 id="modal-title" className="modal-title">
+            {title}
+          </h3>
+          {showCloseButton && (
+            <button
+              className="modal-close-btn"
+              onClick={onClose}
+              aria-label="Fechar"
+            >
+              &times;
+            </button>
+          )}
         </div>
         <div className="modal-body">{children}</div>
-        {footerContent && <div className="modal-footer">{footerContent}</div>}
       </div>
     </div>,
-    modalRoot
+    document.getElementById("modal-root") // O alvo do nosso portal no public/index.html
   );
 }
 
 Modal.propTypes = {
   isOpen: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
-  title: PropTypes.string,
+  title: PropTypes.string.isRequired,
   children: PropTypes.node.isRequired,
-  footerContent: PropTypes.node,
-  size: PropTypes.oneOf(["small", "medium", "large", "xl"]),
+  size: PropTypes.oneOf(["small", "medium", "large", "full"]),
+  showCloseButton: PropTypes.bool,
+  closeOnEsc: PropTypes.bool,
+  closeOnOverlayClick: PropTypes.bool,
+  className: PropTypes.string,
 };
 
 export default Modal;

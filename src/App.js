@@ -1,80 +1,86 @@
-// src/App.js
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { AuthProvider } from "./contexts/AuthContext";
 
-// Layouts
+// 1. Provedores de Contexto Globais
+import { AuthProvider } from "./contexts/AuthContext";
+import { NotificationProvider } from "./contexts/NotificationContext"; // Essencial para as notificações
+
+// 2. Componentes de Layout Estruturais
 import MainLayout from "./components/layout/MainLayout";
 import AuthLayout from "./components/layout/AuthLayout";
 
-// Componentes de Rota
+// 3. Componentes de Rota (Guardas de Segurança)
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import AuthRoute from "./components/auth/AuthRoute";
 
-// Pages
+// 4. Todas as Páginas da Aplicação
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import RegisterPage from "./pages/RegisterPage";
 import EstablishmentsPage from "./pages/EstablishmentsPage";
 import DashboardPage from "./pages/DashboardPage";
 import ProfilePage from "./pages/ProfilePage";
-import NotFoundPage from "./pages/NotFoundPage";
-
-// Novas Páginas (devem ser criadas)
+import PricingPage from "./pages/PricingPage";
 import NewEstablishmentPage from "./pages/NewEstablishmentPage";
 import CheckoutPage from "./pages/CheckoutPage";
-import PricingPage from "./pages/PricingPage"; // Adicionada para o fluxo de monetização
+import MapPage from "./pages/MapPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
+// Estilos Globais
 import "./styles/global.css";
 
 function App() {
   return (
-    // O AuthProvider envolve toda a aplicação, disponibilizando o contexto
-    <AuthProvider>
-      <Router>
-        <Routes>
-          {/* Rotas Públicas (dentro do MainLayout) */}
-          <Route element={<MainLayout />}>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/establishments" element={<EstablishmentsPage />} />
-            <Route path="/pricing" element={<PricingPage />} />{" "}
-            {/* Rota para a página de preços */}
-          </Route>
+    // Os Provedores envolvem toda a aplicação para que os seus contextos
+    // (notificações, utilizador logado) estejam disponíveis em todo o lado.
+    <NotificationProvider>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            {/* Grupo de Rotas Públicas - Utilizam o MainLayout */}
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<HomePage />} />
+              <Route path="/establishments" element={<EstablishmentsPage />} />
+              <Route path="/pricing" element={<PricingPage />} />
+              <Route path="/map" element={<MapPage />} />
+            </Route>
 
-          {/* Rotas de Autenticação (dentro do AuthLayout e protegidas pelo AuthRoute) */}
-          <Route
-            element={
-              <AuthRoute>
-                <AuthLayout />
-              </AuthRoute>
-            }
-          >
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-          </Route>
-
-          {/* Rotas Protegidas (dentro do MainLayout e protegidas pelo ProtectedRoute) */}
-          <Route
-            element={
-              <ProtectedRoute>
-                <MainLayout />
-              </ProtectedRoute>
-            }
-          >
-            <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/profile" element={<ProfilePage />} />
+            {/* Grupo de Rotas de Autenticação - Apenas para utilizadores deslogados */}
             <Route
-              path="/establishments/new"
-              element={<NewEstablishmentPage />}
-            />
-            <Route path="/checkout/:planId" element={<CheckoutPage />} />
-          </Route>
+              element={
+                <AuthRoute>
+                  <AuthLayout />
+                </AuthRoute>
+              }
+            >
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
+              {/* Adicionar rota para /reset-password aqui no futuro */}
+            </Route>
 
-          {/* Rota Not Found */}
-          <Route path="*" element={<NotFoundPage />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+            {/* Grupo de Rotas Protegidas - Apenas para utilizadores logados */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <MainLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route path="/dashboard" element={<DashboardPage />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route
+                path="/establishments/new"
+                element={<NewEstablishmentPage />}
+              />
+              <Route path="/checkout/:planId" element={<CheckoutPage />} />
+            </Route>
+
+            {/* Rota "Catch-All" para páginas não encontradas (404) */}
+            <Route path="*" element={<NotFoundPage />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </NotificationProvider>
   );
 }
 

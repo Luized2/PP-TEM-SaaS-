@@ -1,0 +1,103 @@
+.plan-card {
+  position: relative;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+.plan-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+.plan-card-popular {
+  border-color: var(--primary-color);
+  box-shadow: 0 8px 24px rgba(0, 123, 255, 0.15);
+}
+.plan-card-badge {
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--primary-color);
+  color: white;
+  padding: 0.25rem 1rem;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.plan-card-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+.plan-card-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: #212529;
+}
+.plan-card-price {
+  margin-bottom: 1rem;
+  height: 60px; /* Garante alinhamento */
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+}
+.plan-card-currency {
+  font-size: 1.25rem;
+  font-weight: 500;
+  margin-right: 0.25rem;
+}
+.plan-card-amount {
+  font-size: 3rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #212529;
+}
+.plan-card-interval {
+  font-size: 1rem;
+  color: #6c757d;
+  margin-left: 0.25rem;
+}
+.plan-card-description {
+  color: #6c757d;
+  font-size: 0.9rem;
+  min-height: 40px; /* Garante alinhamento */
+}
+.plan-card-features {
+  flex-grow: 1;
+  margin-bottom: 1.5rem;
+}
+.plan-card-features ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.plan-card-feature {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #f1f3f5;
+  display: flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+.plan-card-feature:last-child {
+  border-bottom: none;
+}
+.plan-card-feature-icon {
+  color: var(--success-color, #28a745);
+  margin-right: 0.75rem;
+  font-weight: bold;
+}
+.plan-card-footer {
+  margin-top: auto;
+}
+.plan-card-button {
+  width: 100%;
+}

@@ -1,14 +1,16 @@
-// src/components/common/Alert.js
 import React from "react";
 import PropTypes from "prop-types";
 import "./Alert.css";
 
+/**
+ * Um componente de alerta reutilizável para exibir mensagens.
+ */
 function Alert({ message, type = "info", onClose, className = "" }) {
   if (!message) return null;
 
   const alertClasses = [
     "alert",
-    `alert-${type}`, // 'info', 'success', 'warning', 'danger'
+    `alert-${type}`, // 'success', 'danger', 'warning', 'info'
     onClose ? "alert-dismissible" : "",
     className,
   ]
@@ -21,7 +23,7 @@ function Alert({ message, type = "info", onClose, className = "" }) {
       {onClose && (
         <button
           type="button"
-          className="close-btn"
+          className="alert-close-btn"
           onClick={onClose}
           aria-label="Fechar"
         >
@@ -34,7 +36,7 @@ function Alert({ message, type = "info", onClose, className = "" }) {
 
 Alert.propTypes = {
   message: PropTypes.string,
-  type: PropTypes.oneOf(["info", "success", "warning", "danger"]),
+  type: PropTypes.oneOf(["success", "danger", "warning", "info"]),
   onClose: PropTypes.func,
   className: PropTypes.string,
 };

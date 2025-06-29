@@ -1,0 +1,31 @@
+.establishment-list-container {
+  padding: 1rem 0;
+}
+.establishment-list-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+.establishment-list-item {
+  display: flex;
+}
+.establishment-list-feedback {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 1rem;
+  text-align: center;
+  min-height: 300px;
+}
+.establishment-list-feedback p {
+  margin-top: 1rem;
+  color: var(--secondary-color);
+  font-size: 1.1rem;
+}
+.establishment-list-load-more {
+  display: flex;
+  justify-content: center;
+  margin: 2rem 0;
+}
