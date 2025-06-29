@@ -1,6 +1,6 @@
 import React from "react";
 import EstablishmentMap from "../components/establishments/EstablishmentMap";
-import useFirestoreQuery from "../hooks/useFirestoreQuery"; // <-- IMPORTAÇÃO CORRIGIDA
+import { useFirestoreQuery } from "../hooks/useFirestoreQuery";
 import { collection, query, where } from "firebase/firestore";
 import { db } from "../services/firebase";
 import Spinner from "../components/common/Spinner";
